@@ -1,0 +1,263 @@
+body {
+  color:#555;
+  background-color:#333;
+  font-family:sans-serif;
+}
+
+img.logo {
+  float:right;
+  margin-left:25px;
+}
+
+h1 { font-size:1.8em; font-weight:400; }
+h2 { font-size:1.5em; font-weight:400; }
+h3 { font-size:1.3em; font-weight:400; }
+h4 { font-size:1.2em; font-weight:400; margin-bottom:0em; }
+h5 { font-size:1.1em; font-weight:400; }
+h6 { font-size:1.0em; font-weight:300; }
+
+div.tagline {
+  color:#222;
+  font-weight:400;
+  font-size:1.15em;
+  font-style:italic;
+  margin-bottom:1.15em;
+}
+
+footer {
+  clear:both;
+  min-height:100px;
+  background-color:#333;
+  color:#ddd;
+  font-size:70%;
+  padding-top:1.5em;
+}
+
+footer div.wrapper div.content {
+  margin-top:0px;
+  text-align:center;
+}
+
+.outer {
+  border-top:6px solid #333;
+  background-color:white;
+  color:#333;
+  padding-top:1em;
+}
+
+header {
+  position:relative;
+}
+
+header ul li:before { content: ""; }
+header ul {
+  line-height:1em;
+  font-size:70%;
+  background-color:#333;
+  position:absolute;
+  padding:8px;
+  margin:0px;
+  color:#ddd;
+}
+
+header ul.nav {
+  left:0px;
+  -webkit-border-bottom-right-radius:4px;
+  -moz-border-bottom-right-radius:4px;
+  border-bottom-right-radius:4px;
+  padding-right:10px;
+}
+
+header ul.user {
+  right:0px;
+  -webkit-border-bottom-left-radius:4px;
+  -moz-border-bottom-left-radius:4px;
+  border-bottom-left-radius:4px;
+}
+
+header ul li {
+  display:inline-block;
+  padding:0px 5px 3px 5px;
+  margin:0px;
+  text-indent:0px;
+}
+
+header ul.user li {
+  border-left:1px dotted #ddd;
+}
+
+header ul.nav li {
+  padding-right:1px;
+}
+
+header ul.nav li + li {
+  padding-left:0px;
+}
+
+header ul.nav li + li:before {
+  content:"» ";
+}
+
+header ul li:first-child {
+  border-left:0px;
+}
+
+header ul li a:link,
+header ul li a:visited,
+header ul li a:active,
+footer .wrapper a,
+footer .wrapper a:visited,
+footer .wrapper a:active
+{ color:#ddd; }
+
+header ul li a:hover,
+footer .wrapper a:hover
+{ color:#c33; }
+
+
+form {
+  margin-top:0.7em;
+}
+
+div.wrapper div.content {
+  position:relative;
+  width:900px;
+  left:50%;
+  margin-left:-450px;
+  margin-bottom:2em;
+  margin-top:2.5em;
+}
+
+ul.messages {
+  margin-left:0px;
+  list-style:none;
+  list-style-position:inside;
+}
+ul.messages li:before { content: ""; }
+
+ul.messages li {
+  list-style:none;
+  list-style-position:inside;
+  margin-left:0px;
+  margin-bottom:8px;
+  padding:6px 6px 6px 26px;
+  border:1px solid #333;
+}
+
+ul.messages li.success {
+  list-style-image:url('/static/images/li_success.png');
+  background-color:#cfc;
+}
+
+ul.messages li.warning {
+  list-style-image:url('/static/images/li_warning.png');
+  background-color:#ffc;
+}
+
+ul.messages li.error {
+  list-style-image:url('/static/images/li_error.png');
+  background-color:#fcc;
+  color:#444;
+}
+
+ul.messages li.info {
+  list-style-image:url('/static/images/li_info.png');
+  background-color:#c0d9f0;
+}
+
+form, table.form {
+  margin-bottom:0px;
+}
+
+table.form { 
+  border:none;
+}
+
+table.form th, table.form td {
+  padding:0.25em 0em;
+  border:none;
+}
+
+table.form th {
+  color:#222;
+  font-weight:300;
+  padding-right:1em;
+}
+
+table.form td ul.errorlist {
+  padding:0px;
+  margin:0.3em 0px 0px;
+  font-size:75%;
+  color:#c33;
+}
+
+table.form td ul.errorlist li {
+  padding:0px;
+  text-indent:0px;
+  margin:0px;
+}
+
+table.form td ul.errorlist li:before { content:""; }
+
+table.form td {
+  width:748px;
+}
+
+table.form th {
+  width:150px;
+}
+
+input[type="text"], input[type="password"], select {
+  width:225px;
+  border:1px solid #ccc;
+  padding:0.2em 0.4em;
+  margin:0px;
+}
+
+input[type="password"] {
+  padding:0.37em 0.4em 0.2em;
+  margin:0px;
+}
+
+input[type="submit"] {
+  width:150px;
+  border:1px solid;
+  border-radius:3px;
+  -webkit-border-radius:3px;
+  -moz-border-radius:3px;
+  border-color:#333;
+  background-color:#ddd;
+  padding-bottom:0.37em;
+}
+
+table.form.wide input[type="password"], table.form.wide input[type="text"], table.form.wide select {
+  width:735px;
+}
+
+table.tablesorter thead th {
+  font-size:85%;
+}
+
+div.histogram {
+  float:right;
+  height:26px;
+  width:55px;
+  margin-left:8px;
+}
+
+div.histogram span.data {
+  display:none;
+}
+
+dl {
+  font-size:85%;
+}
+
+dl > * {
+  margin:0px;
+}
+
+dl dd {
+  font-weight:normal;
+  padding-left:30px;
+}

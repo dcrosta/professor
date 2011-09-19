@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}Professor{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/reset.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/generic.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/tablesorter.css')}}"/>
+    {% block styles %}{% endblock %}
+  </head>
+  <body>
+    <header>
+      <div class="content">
+        <ul class="nav">
+          <li><a href="{{url_for('index')}}">Home</a></li>
+          {% block breadcrumbs %}{% endblock %}
+        </ul>
+        <ul class="user">
+          <li><a href="{{url_for('new_database')}}">New Database</a></li>
+          <li><a href="{{url_for('preferences')}}">Preferences</a></li>
+        </ul>
+      </div>
+    </header>
+    <div class="outer">
+      <div class="wrapper">
+        <div class="content">
+          <div class="main">
+            {% block main %}{% endblock %}
+          </div>
+        </div>
+      </div>
+      <footer>
+        <div class="wrapper">
+          <div class="content">
+            &copy; 2011 <a href="https://github.com/dcrosta">Dan Crosta</a>
+            &mdash; <a href="https://github.com/dcrosta/professor">Fork me on GitHub!</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery-1.6.2.min.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery.metadata.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/jquery.tablesorter.min.js')}}"></script>
+    <script type="text/javascript">
+      $(document).ready(function() { $('table.tablesorter').tablesorter(); });
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
+

@@ -1,0 +1,28 @@
+/*
+    Tripoli is a generic CSS standard for HTML rendering. 
+    Copyright (C) 2007  David Hellsing
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.content ul { list-style: disc outside; margin-left: 2em; } /* IE can't handle :before and :after */
+.content ul li { text-indent: 0; margin-left: 0; }
+.content legend { margin-bottom: 1.6em; } /* IE form margin bug */
+sup, sub { font-size: 100%; } /* IE superscript & subscript bug */
+.content blockquote p, #content blockquote ul, #content blockquote ol, #content blockquote dl, #content blockquote pre, #content blockquote address, 
+.content blockquote table, #content blockquote form, #content blockquote h1, #content blockquote h2, #content blockquote h3, #content blockquote h4, #content blockquote h5, #content blockquote h6 { margin-top: .8em; margin-bottom: .8em; } /* IE can't handle :first-child */
+* html .content textarea, * html .content input { padding: 0; } /* IE < 7 form fix */
+.content input[type='submit'], .content input[type='button'] { padding: 0; } /* IE 7 button fix */
+.content legend+* { margin-top: 0; } /* we already added legend margin */
+a abbr, a acronym { text-decoration: underline; } /* IE 7 bug */

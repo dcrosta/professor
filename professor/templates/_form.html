@@ -1,0 +1,44 @@
+<form {% if formid %}id="{{formid}}" {% endif %}method="post" action="{{form.action}}">
+  <table class="form">
+    <tbody>
+      {% for field in form %}
+      {% if field.type != 'HiddenField' %}
+      <tr>
+        <th>{{field.label}}</th>
+        <td id="td-{{field.name}}">
+          {{field}}
+          {% if field.errors %}
+          <ul class="errors">
+            {% for error in field.errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+      <tr>
+        <th></th>
+        <td>
+          <input type="submit" name="save" value="{{submitlabel|default("Submit")}}"/>
+          {% for name, label in buttons %}
+          &nbsp; <input type="submit" name="{{name}}" value="{{label}}"/>
+          {% endfor %}
+          {% if form.errors.__all__ %}
+          <ul class="errors">
+            {% for error in form.errors.__all__ %}
+            <li>{{error}}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  {% for field in form %}
+  {% if field.type == 'HiddenField' %}
+  {{field}}
+  {% endif %}
+  {% endfor %}
+</form>

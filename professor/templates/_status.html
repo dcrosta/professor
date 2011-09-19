@@ -1,0 +1,45 @@
+<dl>
+  {% if not hideoverall %}
+  <dt>Status:</dt>
+  <dd{% if not connected %} class="error"{% endif %}>{{status}}</dd>
+  <dt>Last Profiled:</dt>
+  <dd>
+    {% if database.timestamp %}
+    {{database.timestamp|strftime('%Y-%m-%d %I:%M %p %Z')}},
+    {{count}} ops
+    {% else %}
+    <em>not profiled</em>
+    {% endif %}
+    {% if connected %}
+    &nbsp; <a href="{{url_for('profile', hostname=database.hostname, dbname=database.dbname)}}">&raquo; update now</a>
+    {% endif %}
+  </dd>
+  {% endif %}
+  {% if collstats %}
+  <dt>Documents:</dt>
+  <dd>{{collstats.count}}</dd>
+  <dt>Padding Factor:</dt>
+  <dd>{{collstats.paddingFactor}}</dd>
+  <dt>Average Doc Size</dt>
+  <dd>{{collstats.avgObjSize|humansize}}</dd>
+  <dt>Total Storage Size</dt>
+  <dd>{{collstats.size|humansize}}</dd>
+  {% if indexes %}
+  <dt>Indexes</dt>
+  <dd>
+    <ul>
+      {% for index in indexes %}
+      <li>
+        {% for field, direction in index.key %}
+        {% if loop.first %}({% endif %}{{field}}: {% if direction == 1 %}asc{% else %}desc{% endif %}{% if not loop.last %},{% else %}){% endif %}
+        {% endfor %}
+        {% if index.sparse %}sparse{% endif %}
+        {% if index.unique %}unique{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </dd>
+  {% endif %}
+  {% endif %}
+</dl>
+

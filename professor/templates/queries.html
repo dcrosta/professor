@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{url_for('static', filename='js/jquery.sparkline.min.js')}}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('div.histogram').each(function() {
+      var data = [];
+      var nums = $(this).find('.data').text().split(',');
+      for (var i in nums) {
+        data[data.length] = parseInt(nums[i], 10);
+      }
+      $(this).sparkline(data, {type: "bar", barColor: "#0066CC", height: "26px", barWidth: 6, barSpacing: 1});
+    });
+  });
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+<li><a href="{{url_for('host', hostname=database.hostname)}}">{{database.hostname}}</a></li>
+<li><a href="{{url_for('database', hostname=database.hostname, dbname=database.dbname)}}">{{database.dbname}}</a></li>
+<li><a href="{{url_for('collection', hostname=database.hostname, dbname=database.dbname, collection=collection)}}">{{collection}}</a></li>
+<li><a href="{{url_for('query', hostname=database.hostname, dbname=database.dbname, collection=collection, skel=skel)}}">{{skel}}</a></li>
+{% endblock %}
+
+{% block main %}
+<h1>{{database.dbname}} &raquo; {{collection}} &raquo; {{skel}}</h1>
+{% set hideoverall = True %}
+{% include "_status.html" %}
+
+<h3>queries: {{skel}}</h3>
+<table class="tablesorter collection {sortlist: [[0,1]]}">
+  <thead>
+    <tr>
+      <th width="25%">When</th>
+      <th width="68%">Query</th>
+      <th width="7%">Millis</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for query in queries %}
+    <tr>
+      <td>{{query.ts|strftime('%Y-%m-%d %I:%M %p %Z')}}</td>
+      <td>{{query.query|desanitize}}</td>
+      <td>{{query.millis}}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+

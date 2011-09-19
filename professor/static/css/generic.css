@@ -1,0 +1,130 @@
+/*
+    Tripoli is a generic CSS standard for HTML rendering. 
+    Copyright (C) 2007  David Hellsing
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*
+-----------------------------
+GENERIC
+-----------------------------
+*/
+
+/* MAIN TYPOGRAPHY */
+
+html { font-family: helvetica, "microsoft sans serif", arial, sans-serif; }
+strong, th, thead td, h1, h2, h3, h4, h5, h6 { font-weight: bold; }
+cite, em, dfn { font-style: italic; }
+code, kbd, samp, pre, tt, var, input[type='text'], textarea { font-size: 92%; font-family: monaco, "Lucida Console", courier, mono-space; }
+del { text-decoration: line-through; color: #666; }
+ins, dfn { border-bottom: 1px solid #ccc; }
+small, sup, sub { font-size: 85%; }
+abbr, acronym { text-transform: uppercase; font-size: 85%; letter-spacing: .1em; }
+a abbr, a acronym { border: none; }
+abbr[title], acronym[title], dfn[title] { cursor: help; border-bottom: 1px solid #ccc; }
+sup { vertical-align: super; }
+sub { vertical-align: sub; }
+
+/* QUOTES */
+
+blockquote { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; color: #666; }
+blockquote *:first-child:before { content: "\201C"; }
+blockquote *:first-child:after { content: "\201D"; }
+
+/* language specific quotes! */
+
+q { quotes: "\201C" "\201D" "\2018" "\2019"; }
+:lang(af), :lang(nl), :lang(pl) { quotes: '\201E' '\201D' '\201A' '\2019'; }
+:lang(bg), :lang(cs), :lang(de), :lang(is), :lang(lt), :lang(sk), :lang(sr), :lang(ro) { quotes: '\201E' '\201C' '\201A' '\2018'; }
+:lang(da), :lang(hr) { quotes: '\00BB' '\00AB' '\203A' '\2039'; }
+:lang(el), :lang(es), :lang(sq), :lang(tr) { quotes: '\00AB' '\00BB' '\2039' '\203A'; }
+:lang(en-GB) { quotes: '\2018' '\2019' '\201C' '\201D'; }
+:lang(fi), :lang(sv) { quotes: '\201D' '\201D' '\2019' '\2019'; }
+:lang(fr) { quotes: '\ab\2005' '\2005\bb' '\2039\2005' '\2005\203a'; }
+
+/* NOTE: safari refuses to support the quotes syntax. I only added the english language quotes for safari to save space. */
+html[lang|='en'] q:before   { content: '\201C'; }
+html[lang|='en'] q:after    { content: '\201D'; }
+html[lang|='en'] q q:before { content: '\2018'; }
+html[lang|='en'] q q:after  { content: '\2019'; }
+
+/* FORMS */
+
+fieldset { border: 1px solid #ccc; }
+legend { background: #fff; }
+textarea, input[type='text'], select { border: 1px solid #ccc; background: #fff; }
+textarea:hover, input[type='text']:hover, input[type='password']:hover, select:hover { border-color: #aaa; }
+textarea:focus, input[type='text']:focus, input[type='password']:focus, select:focus { border-color: #888; outline: 2px solid #ffffaa; }
+input, select { cursor: pointer; }
+input[type='text'] { cursor: text; }
+
+/*
+-----------------------------
+CONTENT ONLY
+-----------------------------
+*/
+
+/* BASE SIZES */
+
+body { font-size: 1.2em; line-height: 1.6em; }
+
+/* HR */
+
+hr { display: block; background: #aaa; color: #aaa; width: 100%; height: 1px; border: none; }
+
+/* LISTS */
+
+ul li { text-indent: -.85em; margin-left: .85em; }
+ul li:before { content: "\2022\00a0\00a0"; }
+ol { list-style-position: outside; list-style-type: decimal; }
+dt { font-weight: bold; }
+
+/* TABLES */
+
+table { border-top: 1px solid #ccc;  border-left: 1px solid #ccc; }
+th, td { border-bottom: 1px solid #ddd; border-right: 1px solid #ccc; }
+
+/* MARGINS & PADDINGS */
+
+blockquote *:first-child { margin: .8em 0; }
+hr, p, ul, ol, dl, pre, blockquote, address, table, form { margin-bottom: 1.6em; }
+p+p { margin-top: -.8em; }
+/* NOTE: Calulate header margins: TOP: 1.6em/size, BOTTOM: 1.6em/size/2 */
+h1 { margin: 0.7em 0 .5em;  }
+h2 { margin: 1.07em 0 .535em; }
+h3 { margin: 1.14em 0 .57em; }
+h4 { margin: 1.23em 0 .615em; }
+h5 { margin: 1.33em 0 .67em; }
+h6 { margin: 1.6em 0 .8em; }
+th, td { padding: .8em; }
+caption { padding-bottom: .8em; } /* padding instead of margin for IE */
+blockquote { padding: 0 1em; margin: 1.6em 0; }
+fieldset { padding: 0 1em 1em 1em; margin: 1.6em 0; } /* padding-top is margin-top for fieldsets in Opera */
+legend { padding-left: .8em; padding-right: .8em; }
+legend+* { margin-top: 1em; } /* compensates for the opera margin bug */
+textarea, input { padding: .3em .4em .15em .4em; }
+select { padding: .1em .2em 0 .2em; }
+option { padding: 0 .4em; }
+a { position: relative; padding: 0.3em 0 .1em 0; } /* for larger click-area */
+dt { margin-top: .8em; margin-bottom: .4em; }
+ul { margin-left: 1.5em; }
+ol { margin-left: 2.35em; }
+ol ol, ul ol { margin-left: 2.5em; }
+form div { margin-bottom: .8em; }
+
+/* COLORS */
+
+a:link, a:visited, a:hover, a:active, a:focus { text-decoration: underline; color: #36c; }
+code, pre { color: #c33; } /* very optional, but still useful. W3C uses about the same colors for codes */

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+{% if hostname %}
+<li>{{hostname}}</li>
+{% endif %}
+{% endblock %}
+
+{% block main %}
+<h1>Professor</h1>
+<div class="tagline">Painless profiling for MongoDB</div>
+
+<table class="tablesorter {sortlist: [[0,0]]}">
+  <thead>
+    <tr>
+      <th>Host</th>
+      <th>Database</th>
+      <th>Freshness</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for db in databases %}
+    <tr>
+      <td><a href="{{url_for('host', hostname=db.hostname)}}">{{db.hostname}}:27017</a></td>
+      <td><a href="{{url_for('database', hostname=db.hostname, dbname=db.dbname)}}">{{db.dbname}}</a></td>
+      <td>{% if db.timestamp != 0 %}{{db.timestamp}}{% else %}<em>not profiled</em>{% endif %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
