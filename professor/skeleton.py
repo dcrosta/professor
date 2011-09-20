@@ -26,6 +26,7 @@
 __all__ = ('skeleton', 'sanitize')
 
 from bson.objectid import ObjectId
+from bson.code import Code
 from datetime import datetime
 import re
 
@@ -39,6 +40,7 @@ BSON_TYPES = set([
     datetime,
     ObjectId,
     type(re.compile('')),
+    Code,
 ])
 
 
@@ -71,6 +73,8 @@ def skeleton(query_part):
             else:
                 out.append(key)
         return u'{%s}' % ','.join(out)
+    elif t == Code:
+        return str(query_part)
     elif t not in BSON_TYPES:
         raise Exception(query_part)
 
@@ -102,27 +106,4 @@ def desanitize(value):
         raise Exception(value)
     else:
         return value
-
-if __name__ == '__main__':
-    import sys
-    if 't' in sys.argv:
-        import doctest
-        doctest.testmod()
-
-    else:
-        import pymongo
-        conn = pymongo.Connection()
-        db = conn.nymwit
-        queries = db.system.profile.find({'op': 'query', 'query.$query': {'$exists': True}, 'ns': {'$nin': ['www.system.profile', 'www.system.namespaces']}})
-
-        qbyskel = {}
-        for query in queries:
-            skel = skeleton(query['query']['$query'])
-            qbyskel.setdefault(skel, []).append(query)
-
-        for skel in qbyskel:
-            print qbyskel[skel][0]['ns'], skel, len(qbyskel[skel]), sum(q['millis'] for q in qbyskel[skel]) / float(len(qbyskel[skel]))
-            for query in qbyskel[skel]:
-                print " ",
-                print query['query']
 

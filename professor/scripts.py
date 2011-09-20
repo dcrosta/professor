@@ -26,11 +26,12 @@
 import argparse
 from pymongo import ASCENDING, DESCENDING
 import re
+import time
 
 from professor import db
 from professor.logic import *
 
-db_name = re.compile('(\w+)/(\w+)')
+db_name = re.compile('(\S+)/(\S+)')
 
 def do_list(parser, args):
     print 'Known Databases:'
@@ -38,6 +39,11 @@ def do_list(parser, args):
         print "   %s/%s" % (d['hostname'], d['dbname'])
 
 def get_database(parser, args):
+    if not hasattr(args, 'databases'):
+        args.databases = {}
+    if args.database in args.databases:
+        return args.databases[args.database]
+
     m = db_name.match(args.database)
     if not m:
         parser.error('"%s" is not a valid database' % args.database)
@@ -47,12 +53,15 @@ def get_database(parser, args):
     if not database:
         parser.error('"%s" is not a known database' % args.database)
 
+    if args.database not in args.databases:
+        args.databases[args.database] = database
+
     return database
 
 def do_update(parser, args):
     database = get_database(parser, args)
     count = update(database)
-    print "updated %d entries" % count
+    print "%s: updated %d entries" % (args.database, count)
 
 def do_reset(parser, args):
     database = get_database(parser, args)
@@ -75,6 +84,9 @@ def do_remove(parser, args):
 
 def profess():
     parser = argparse.ArgumentParser(description='Painless MongoDB Profiling')
+    parser.add_argument('-s', '--seconds', dest='interval', metavar='N', type=int,
+                        help='Repeat this command every N seconds', default=None)
+
     commands = parser.add_subparsers()
 
     list = commands.add_parser('list', help='List databases known to professor')
@@ -82,23 +94,34 @@ def profess():
 
     reset = commands.add_parser('reset', help='Erase profiling information and reset last sync timestamp')
     reset.set_defaults(cmd=do_reset)
-    reset.add_argument('database', help='Database to clean')
+    reset.add_argument('database', help='Database to clean', nargs='+')
 
     update = commands.add_parser('update', help="Update a database's profiling information")
     update.set_defaults(cmd=do_update)
-    update.add_argument('database', help='Database to update')
+    update.add_argument('database', help='Database to update', nargs='+')
 
     clean = commands.add_parser('clean', help='Delete existing profiling information for database')
     clean.set_defaults(cmd=do_clean)
-    clean.add_argument('database', help='Database to clean')
+    clean.add_argument('database', help='Database to clean', nargs='+')
 
     remove = commands.add_parser('remove', help='Completely remove a database from professor')
     remove.set_defaults(cmd=do_remove)
-    remove.add_argument('database', help='Database to remove')
+    remove.add_argument('database', help='Database to remove', nargs='+')
 
 
+    parser.set_defaults(databases={})
     args = parser.parse_args()
-    args.cmd(parser, args)
+
+    dbs = args.database
+    def run_commands():
+        for database in dbs:
+            args.database = database
+            args.cmd(parser, args)
+
+    run_commands()
+    while args.interval is not None:
+        time.sleep(args.interval)
+        run_commands()
 
 if __name__ == '__main__':
     profess()

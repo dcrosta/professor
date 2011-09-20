@@ -109,11 +109,15 @@ def update(database):
     query['op'] = {'$in': PARSERS.keys()}
 
     conndb = connect_to(database)
+    i = 0
     for entry in conndb.system.profile.find(query):
         parse(database, entry)
+        i += 1
 
     database['timestamp'] = now
     db.databases.save(database)
+
+    return i
 
 @grouper('query')
 def group_by_skel(last_entry, entry):
