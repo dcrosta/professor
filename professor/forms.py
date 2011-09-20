@@ -48,7 +48,7 @@ class DatabaseForm(Form):
             return False
         return db.databases.find_one({
             'hostname': self.hostname.data,
-            'dbname': self.database.data}) is None
+            'dbname': self.dbname.data}) is None
 
 class PreferencesForm(Form):
     referrer = HiddenField()
