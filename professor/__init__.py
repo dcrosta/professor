@@ -43,14 +43,6 @@ dbname = app.config.get('MONGODB_CONFIG', {}).pop('db', 'professor')
 conn = pymongo.Connection(**app.config.get('MONGODB_CONFIG', {}))
 db = conn[dbname]
 
-# FIXME: should put these somewhere else!
-db.profiles.ensure_index([
-    ('database', pymongo.ASCENDING),
-    ('op', pymongo.ASCENDING),
-    ('ns', pymongo.ASCENDING),
-    ('skel', pymongo.ASCENDING),
-])
-
 app.session_store = MongoSessionStore(db.session)
 
 import professor.views

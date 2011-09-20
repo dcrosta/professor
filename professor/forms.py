@@ -38,8 +38,8 @@ class LoginForm(Form):
     password = PasswordField(validators=[Required()])
 
 class DatabaseForm(Form):
-    hostname = TextField(validators=[Required()])
-    database = TextField(validators=[Required()])
+    hostname = TextField(label='Host:Port', validators=[Required()])
+    dbname = TextField(label='Database', validators=[Required()])
     username = TextField()
     password = PasswordField()
 
@@ -48,7 +48,7 @@ class DatabaseForm(Form):
             return False
         return db.databases.find_one({
             'hostname': self.hostname.data,
-            'database': self.database.data}) is None
+            'dbname': self.database.data}) is None
 
 class PreferencesForm(Form):
     referrer = HiddenField()

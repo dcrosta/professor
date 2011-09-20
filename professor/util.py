@@ -23,11 +23,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-__all__ = ('get_or_404', 'avg', 'stddev', 'median', 'loghistogram')
+__all__ = ('get_or_404', 'avg', 'stddev', 'median', 'loghistogram', 'connect_to')
 
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from datetime import datetime
+import pymongo
 import pytz
 import re
 
@@ -128,4 +129,14 @@ def loghistogram(values, base=2, buckets=8):
         out.append(sum(1 for value in values if start <= value < end))
 
     return out
+
+def connect_to(database):
+    conn = pymongo.Connection(
+        host=database['hostname'],
+        port=27017,
+        network_timeout=2,
+    )
+    conndb = conn[database['dbname']]
+
+    return conndb
 

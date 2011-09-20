@@ -40,6 +40,7 @@ from professor import app, db
 from professor.util import *
 from professor.forms import *
 from professor.skeleton import *
+from professor.logic import *
 
 @app.route('/db/new', methods=['GET'])
 def new_database():
@@ -55,12 +56,12 @@ def save_database():
     if form.validate():
         db.databases.save({
             'hostname': form.hostname.data,
-            'dbname': form.database.data,
+            'dbname': form.dbname.data,
             'username': form.username.data,
             'password': form.password.data,
             'timestamp': None,
         })
-        return redirect(url_for('database', hostname=form.hostname.data, dbname=form.database.data))
+        return redirect(url_for('database', hostname=form.hostname.data, dbname=form.dbname.data))
 
     return render_template(
         'simpleform.html',
@@ -77,84 +78,29 @@ def host(hostname):
     databases = db.databases.find({'hostname': hostname}).sort([('hostname', ASCENDING), ('dbname', ASCENDING)])
     return render_template('index.html', databases=databases, hostname=hostname)
 
-def connect_to(database, should_raise=True):
-    try:
-        conn = pymongo.Connection(
-            host=database['hostname'],
-            port=27017,
-            network_timeout=2,
-        )
-        conndb = conn[database['dbname']]
-    except Exception, e:
-        if should_raise:
-            abort(500)
-        else:
-            return e
-
-    return conndb
-
 def connect_status(database):
-    conndb = connect_to(database, should_raise=False)
-    if conndb:
-        connected = True
-        profiling = conndb.command('profile', -1)
-        level = profiling['was']
-        if level == 0:
-            status = 'connected, not profiling'
-        elif level == 1:
-            ms = profiling['slowms']
-            status = 'connected, slowms: %d' % ms
-        elif level == 2:
-            status = 'connected, profiling, all ops'
-    else:
-        # conndb is an exception
-        connected = False
-        status = str(conndb)
+    try:
+        conndb = connect_to(database)
+    except Exception, e:
+        return None, False, str(e)
+
+    connected = True
+    profiling = conndb.command('profile', -1)
+    level = profiling['was']
+    if level == 0:
+        status = 'connected, not profiling'
+    elif level == 1:
+        ms = profiling['slowms']
+        status = 'connected, slowms: %d' % ms
+    elif level == 2:
+        status = 'connected, profiling, all ops'
 
     return conndb, connected, status
 
 @app.route('/db/<hostname>/<dbname>/profile')
 def profile(hostname, dbname):
     database = get_or_404(db.databases, hostname=hostname, dbname=dbname)
-
-    now = datetime.utcnow()
-    query = {'ts': {'$lt': now}}
-    if database['timestamp']:
-        query['ts']['$gte'] = database['timestamp']
-
-    query['ns'] = {'$nin': ['%s.system.profile' % database['dbname'], '%s.system.indexes' % database['dbname']]}
-
-    # TODO: support other things
-    query['op'] = 'query'
-
-    conndb = connect_to(database)
-    profiles = conndb.system.profile.find(query)
-    for entry in profiles:
-        # {'responseLength': 20,
-        #  'millis': 40,
-        #  'ts': datetime.datetime(2011, 9, 19, 15, 8, 1, 976000),
-        #  'scanAndOrder': True,
-        #  'client': '127.0.0.1',
-        #  'user': '',
-        #  'query': {'$orderby': {'date': 1},
-        #            '$query': {'processing.status': 'new'}},
-        #  'ns': 'www.formcapture',
-        #  'nscanned': 12133,
-        #  'op': 'query'}
-        query = entry.get('query', {}).get('$query', None)
-        if query is None:
-            query = entry.get('query', {})
-        collection = entry['ns']
-        collection = collection[len(database['dbname']) + 1:]
-
-        profile = sanitize(entry)
-        profile['skel'] = skeleton(query)
-        profile['database'] = database['_id']
-        profile['collection'] = collection
-        db.profiles.insert(profile)
-
-    database['timestamp'] = now
-    db.databases.save(database)
+    update(database)
 
     if request.referrer:
         return redirect(request.referrer)
@@ -166,37 +112,7 @@ def database(hostname, dbname):
 
     count = db.profiles.find({'database': database['_id']}).count()
 
-    allqueries = db.profiles.find({'database': database['_id'], 'op': 'query'})
-    allqueries.sort([
-        ('collection', ASCENDING),
-        ('skel', ASCENDING),
-    ])
-
-    queries = []
-    query = {}
-    for entry in allqueries:
-        skel = entry['skel']
-        collection = entry['collection']
-
-        if skel != query.get('skel') or collection != query.get('collection'):
-            query = {'skel': skel, 'collection': collection, 'times': []}
-            queries.append(query)
-        query['times'].append(entry['millis'])
-
-    for query in queries:
-        times = query['times']
-        info = {
-            'total': sum(times),
-            'min': min(times),
-            'max': max(times),
-            'avg': avg(times),
-            'median': median(times),
-            'stddev': stddev(times),
-            'histogram': loghistogram(times),
-        }
-        query['count'] = len(times)
-        query['times'] = info
-
+    queries = list(aggregate(database, 'query'))
     queries.sort(key=lambda x: x['times']['avg'], reverse=True)
 
     conndb, connected, status = connect_status(database)
@@ -216,35 +132,7 @@ def collection(hostname, dbname, collection):
 
     count = db.profiles.find({'database': database['_id']}).count()
 
-    allqueries = db.profiles.find({'database': database['_id'], 'collection': collection, 'op': 'query'})
-    allqueries.sort([
-        ('skel', ASCENDING),
-    ])
-
-    queries = []
-    query = {}
-    for entry in allqueries:
-        skel = entry['skel']
-
-        if skel != query.get('skel'):
-            query = {'skel': skel, 'collection': collection, 'times': []}
-            queries.append(query)
-        query['times'].append(entry['millis'])
-
-    for query in queries:
-        times = query['times']
-        info = {
-            'total': sum(times),
-            'min': min(times),
-            'max': max(times),
-            'avg': avg(times),
-            'median': median(times),
-            'stddev': stddev(times),
-            'histogram': loghistogram(times),
-        }
-        query['count'] = len(times)
-        query['times'] = info
-
+    queries = list(aggregate(database, 'query', collection))
     queries.sort(key=lambda x: x['times']['avg'], reverse=True)
 
     conndb, connected, status = connect_status(database)
