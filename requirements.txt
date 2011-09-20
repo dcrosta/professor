@@ -1,5 +1,4 @@
 flask
 pymongo
-py-bcrypt
 wtforms
 pytz
