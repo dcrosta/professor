@@ -73,8 +73,6 @@ def skeleton(query_part):
             else:
                 out.append(key)
         return u'{%s}' % ','.join(out)
-    elif t == Code:
-        return str(query_part)
     elif t not in BSON_TYPES:
         raise Exception(query_part)
 
