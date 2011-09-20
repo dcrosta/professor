@@ -110,12 +110,16 @@ def profess():
 
 
     parser.set_defaults(databases={})
+    parser.set_defaults(database=[])
     args = parser.parse_args()
 
     dbs = args.database
     def run_commands():
-        for database in dbs:
-            args.database = database
+        if dbs:
+            for database in dbs:
+                args.database = database
+                args.cmd(parser, args)
+        else:
             args.cmd(parser, args)
 
     run_commands()
