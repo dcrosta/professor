@@ -34,18 +34,18 @@
 {% include "_status.html" %}
 
 <h3>queries</h3>
-<table class="tablesorter collection {sortlist: [[5,1]]}">
+<table class="tablesorter collection {sortlist: [[4,1]]}">
   <thead>
     <tr>
-      <th width="16%">Collection</th>
-      <th width="43%" class="histogram">Skeleton</th>
+      <th width="15%">Collection</th>
+      <th width="50%">Skeleton</th>
       <th width="5%">N</th>
-      <th width="6%">tot</th>
       <th width="6%">min</th>
       <th width="6%">avg</th>
       <th width="6%">med</th>
       <th width="6%">max</th>
       <th width="6%">dev</th>
+      <th width="6%">tot</th>
     </tr>
   </thead>
   <tbody>
@@ -57,12 +57,12 @@
         <a href="{{url_for('query', hostname=database.hostname, dbname=database.dbname, collection=query.collection, skel=query.skel)}}">{{query.skel}}</a>
       </td>
       <td>{{query.count}}</td>
-      <td>{{query.times.total}}</td>
       <td>{{query.times.min}}</td>
       <td>{{query.times.avg|float}}</td>
       <td>{{query.times.median}}</td>
       <td>{{query.times.max}}</td>
       <td>{{query.times.stddev|float}}</td>
+      <td>{{query.times.total}}</td>
     </tr>
 {% endfor %}
   </tbody>
