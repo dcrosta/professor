@@ -123,7 +123,8 @@ def update(database):
 @grouper('query')
 def group_by_skel(last_entry, entry):
     return last_entry.get('skel') is not None and \
-           last_entry.get('skel') == entry.get('skel')
+           last_entry.get('skel') == entry.get('skel') and \
+           last_entry.get('collection') == entry.get('collection')
 
 @summarizer('query')
 def summarize_timings(entries):
