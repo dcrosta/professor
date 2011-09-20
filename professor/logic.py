@@ -87,18 +87,19 @@ def parse(database, entry):
     # skip certain namespaces
     if collection.startswith('system.') or \
        collection.startswith('tmp.mr.'):
-        return
+        return False
 
     optype = entry.get('op')
     subparser = PARSERS.get(optype)
     if subparser:
         if not subparser(entry):
-            return
+            return False
 
     entry = sanitize(entry)
     entry['database'] = database['_id']
 
     db.profiles.save(entry)
+    return True
 
 def update(database):
     now = datetime.utcnow()
@@ -111,8 +112,8 @@ def update(database):
     conndb = connect_to(database)
     i = 0
     for entry in conndb.system.profile.find(query):
-        parse(database, entry)
-        i += 1
+        if parse(database, entry):
+            i += 1
 
     database['timestamp'] = now
     db.databases.save(database)
