@@ -25,7 +25,8 @@
 
 __all__ = ('app', 'conn', 'db')
 
-from os.path import dirname, join, exists
+from os import getcwd
+from os.path import join, exists
 
 from flask import Flask
 from professor.session import *
@@ -34,7 +35,7 @@ class SessionFlask(SessionMixin, Flask): pass
 app = SessionFlask(__name__)
 
 for filename in ('professor.cfg', 'private.cfg'):
-    fullpath = join(dirname(__file__), '..', filename)
+    fullpath = join(getcwd(), filename)
     if exists(fullpath):
         app.config.from_pyfile(fullpath)
 
