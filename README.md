@@ -91,7 +91,7 @@ Note that, although the order of keys is not preserved, it is predictable
 (since the keys of documents are sorted alphabetically).
 
 
-## `profess`
+## Professor at the command line
 
 The `profess` command line tool has a number of modes of operation:
 
