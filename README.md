@@ -25,7 +25,7 @@ on the default port on localhost, edit `professor.cfg` or create a new file
 variable.
 
 
-## Set up your databases
+### Set up your databases
 
 Once Professor is installed and running, go to http://localhost:8080/ in
 your browser, and click "New Database" in the upper-right corner. Enter the
@@ -38,7 +38,7 @@ by clicking the "update now" link, or using the command-line tool
 (preferred).
 
 
-## Updating profiling data
+### Updating profiling data
 
 The best way to update the profiling data is to ask the `profess` script to
 periodically query for new profiling information from the target databases:
@@ -47,6 +47,48 @@ periodically query for new profiling information from the target databases:
 
 will update the "example" and "test" databases running on localhost every 5
 seconds.
+
+
+## How Professor Works
+
+Professor is designed to have minimal impact on running systems. It connects
+to target databases each time an update is issued (through the web or
+command line), queries only for new data in `system.profile` since the last
+update, and replicates that data to its own database for use from within the
+Professor webapp. In instances where you do not wish to impact your running
+databases any more than is absolutely necessary (i.e. production databases),
+Professor should be configured to use its own instance of MongoDB running on
+separate hardware.
+
+While querying for profile information, Professor annotates the profile
+entries with a few useful pieces of additional information:
+
+* A query "skeleton," which is a string representation of the structure of
+the query; that is, it shows which keys were present, but no values set for
+those keys. This enables Professor to group queries with the same structure
+together for reporting.
+* A sort "skeleton," if the query included a `sort()`.
+
+The skeleton is a simple transformation of a BSON document into a string as
+follows:
+
+* For (embedded) documents, order the keys and recurse; emit keys separated
+by commas and surrounded by `{` and `}`; when recursion returns a
+sub-skeleton, separate the key and value with a colon
+* For arrays, iterate in order and recurse; emit recursed contents separated
+by commans and surrounded by `[` and `]`
+* For everything else, emit nothing
+
+Thus a query such as:
+
+    {username: "dcrosta", city: "New York", zip: {$in: [10010, 10011]}}
+
+Has as its skeleton:
+
+    "{city,username,zip:{$in:[]}}"
+
+Note that, although the order of keys is not preserved, it is predictable
+(since the keys of documents are sorted alphabetically).
 
 
 ## `profess`
