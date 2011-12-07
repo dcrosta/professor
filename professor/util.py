@@ -135,6 +135,7 @@ def connect_to(database):
         host=database['hostname'],
         port=27017,
         network_timeout=2,
+        slaveok=True,
     )
     conndb = conn[database['dbname']]
 
