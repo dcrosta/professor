@@ -131,9 +131,16 @@ def loghistogram(values, base=2, buckets=8):
     return out
 
 def connect_to(database):
+    match = re.match(r'^(?P<host>[^:]+):(?P<port>\d+)$', database['hostname'])
+    if match:
+        host = match.group('host')
+        port = int(match.group('port'))
+    else:
+        host = database['hostname']
+        port = 27017
     conn = pymongo.Connection(
-        host=database['hostname'],
-        port=27017,
+        host=host,
+        port=port,
         network_timeout=2,
         slaveok=True,
     )
