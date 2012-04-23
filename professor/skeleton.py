@@ -52,19 +52,28 @@ BSON_TYPES = set([
 ])
 
 
-
 def skeleton(query_part):
     """
-    >>> skeleton({u'acronym': u'AMSHAT'})
-    u'{acronym}'
-    >>> skeleton({u'_id': 1, u'locked': False})
-    u'{_id,locked}'
-    >>> skeleton({})
-    u'{}'
-    >>> skeleton({u'op': u'query'})
-    u'{op}'
-    >>> skeleton({u'op': None})
-    u'{op}'
+    Generate a "skeleton" of a document (or embedded document). A
+    skeleton is a (unicode) string indicating the keys present in
+    a document, but not the values, and is used to group queries
+    together which have identical key patterns regardless of the
+    particular values used. Keys in the skeleton are always sorted
+    lexicographically.
+
+    Raises :class:`~bson.errors.InvalidDocument` when the document
+    cannot be converted into a skeleton (this usually indicates that
+    the type of a key or value in the document is not known to
+    Professor).
+
+    For example:
+
+        >>> skeleton({'hello': 'World'})
+        u'{hello}'
+        >>> skeleton({'title': 'My Blog Post', 'author': 'Dan Crosta'})
+        u'{author,title}
+        >>> skeleton({})
+        u'{}'
     """
     t = type(query_part)
     if t == list:
@@ -87,10 +96,11 @@ def skeleton(query_part):
         raise InvalidDocument('unknown BSON type %r' % t)
 
 def sanitize(value):
-    # return a copy of the query with all
-    # occurrences of "$" replaced by "_$_",
-    # and ocurrences of "." replaced by
-    # "_,_" in keys
+    """"Sanitize" a value (e.g. a document) for safe storage
+    in MongoDB. Converts periods (``.``) and dollar signs
+    (``$``) in key names to escaped versions. See
+    :func:`~professor.skeleton.desanitize` for the inverse.
+    """
     t = type(value)
     if t == list:
         return map(sanitize, value)
@@ -103,7 +113,8 @@ def sanitize(value):
         return value
 
 def desanitize(value):
-    # perform the inverse of sanitize()
+    """Does the inverse of :func:`~professor.skeleton.sanitize`.
+    """
     t = type(value)
     if t == list:
         return map(desanitize, value)
