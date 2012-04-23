@@ -8,4 +8,6 @@ install: python setup.py -q install
 script: python setup.py -q nosetests
 matrix:
   allow_failures:
-    - python: 3.2
+    - python:
+      - 2.5
+      - 3.2

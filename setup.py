@@ -17,6 +17,7 @@ setup(
     description='Painless MongoDB Profiling',
     classifiers=[
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
