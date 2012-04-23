@@ -7,6 +7,10 @@ requires = [
     'pytz',
 ]
 
+import sys
+if sys.version_tuple < (2, 7):
+    requires.append('argparse')
+
 setup(
     name='professor',
     version='0.1',

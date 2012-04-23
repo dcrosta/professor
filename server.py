@@ -27,15 +27,12 @@
 from professor import app as application
 
 if __name__ == '__main__':
-    import optparse
-    parser = optparse.OptionParser('%prog [OPTIONS]')
-    parser.add_option('-p', '--port', help='Port number to run development server [8080]', default=8080, type=int)
-    parser.add_option('-b', '--bind-ip', help='IP address run development server [0.0.0.0]', default='0.0.0.0')
-    parser.add_option('-d', '--debug', help='Run development server in debug mode [false]', default=False, action='store_true')
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', help='Port number to run development server [8080]', default=8080, type=int)
+    parser.add_argument('-b', '--bind-ip', help='IP address run development server [0.0.0.0]', default='0.0.0.0')
+    parser.add_argument('-d', '--debug', help='Run development server in debug mode [false]', default=False, action='store_true')
 
-    options, args = parser.parse_args()
-    if len(args):
-        parser.error('does not accept positional arguments')
-
+    options = parser.parse_args()
     application.run(host=options.bind_ip, port=options.port, debug=options.debug)
 
