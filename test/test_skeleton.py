@@ -93,7 +93,8 @@ class SkeletonTest(unittest.TestCase):
         try:
             s.skeleton({'a': NonBsonType(1)})
         except InvalidDocument as e:
-            self.assertEqual(e.args, ("unknown BSON type <class 'test.test_skeleton.NonBsonType'>", ))
+            msg = e.args[0]
+            self.assertTrue(re.match(r'unknown BSON type <.*NonBsonType.*>', msg))
 
 class SanitizerTest(unittest.TestCase):
 
@@ -126,11 +127,13 @@ class SanitizerTest(unittest.TestCase):
         try:
             s.skeleton({'a': NonBsonType(1)})
         except InvalidDocument as e:
-            self.assertEqual(e.args, ("unknown BSON type <class 'test.test_skeleton.NonBsonType'>", ))
+            msg = e.args[0]
+            self.assertTrue(re.match(r'unknown BSON type <.*NonBsonType.*>', msg))
 
         self.assertRaises(InvalidDocument, s.desanitize, ({'a': NonBsonType(1)}, ))
         try:
             s.skeleton({'a': NonBsonType(1)})
         except InvalidDocument as e:
-            self.assertEqual(e.args, ("unknown BSON type <class 'test.test_skeleton.NonBsonType'>", ))
+            msg = e.args[0]
+            self.assertTrue(re.match(r'unknown BSON type <.*NonBsonType.*>', msg))
 
