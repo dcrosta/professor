@@ -23,6 +23,19 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+# this file may be used as a WSGI script
 from professor import app as application
-application.run(host='0.0.0.0', port=8080, debug=True)
+
+if __name__ == '__main__':
+    import optparse
+    parser = optparse.OptionParser('%prog [OPTIONS]')
+    parser.add_option('-p', '--port', help='Port number to run development server [8080]', default=8080, type=int)
+    parser.add_option('-b', '--bind-ip', help='IP address run development server [0.0.0.0]', default='0.0.0.0')
+    parser.add_option('-d', '--debug', help='Run development server in debug mode [false]', default=False, action='store_true')
+
+    options, args = parser.parse_args()
+    if len(args):
+        parser.error('does not accept positional arguments')
+
+    application.run(host=options.bind_ip, port=options.port, debug=options.debug)
 
