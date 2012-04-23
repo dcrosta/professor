@@ -30,6 +30,9 @@ setup(
     url='https://github.com/dcrosta/professor',
     keywords='mongodb profiling',
     install_requires=requires,
+    tests_require=['nose', 'coverage'],
+    # this enables the "setup.py nosetests" command
+    setup_requires=['nose'],
     packages=find_packages(),
     entry_points={
         'console_scripts': [ 'profess=professor.scripts:profess' ],

@@ -25,8 +25,12 @@
 
 __all__ = ('skeleton', 'sanitize')
 
-from bson.objectid import ObjectId
+from bson.binary import Binary
 from bson.code import Code
+from bson.dbref import DBRef
+from bson.errors import InvalidDocument
+from bson.objectid import ObjectId
+from bson.son import SON
 from datetime import datetime
 import re
 
@@ -42,6 +46,9 @@ BSON_TYPES = set([
     type(re.compile('')),
     Code,
     type(None),
+    Binary,
+    DBRef,
+    SON,
 ])
 
 
@@ -67,7 +74,7 @@ def skeleton(query_part):
             if sub is not None:
                 out.append(sub)
         return u'[%s]' % ','.join(out)
-    elif t == dict:
+    elif t in (dict, SON):
         out = []
         for key in sorted(query_part.keys()):
             sub = skeleton(query_part[key])
@@ -77,7 +84,7 @@ def skeleton(query_part):
                 out.append(key)
         return u'{%s}' % ','.join(out)
     elif t not in BSON_TYPES:
-        raise Exception(query_part)
+        raise InvalidDocument('unknown BSON type %r' % t)
 
 def sanitize(value):
     # return a copy of the query with all
@@ -91,7 +98,7 @@ def sanitize(value):
         return dict((k.replace('$', '_$_').replace('.', '_,_'), sanitize(v))
                     for k, v in value.iteritems())
     elif t not in BSON_TYPES:
-        raise Exception(value)
+        raise InvalidDocument('unknown BSON type %r' % t)
     else:
         return value
 
@@ -104,7 +111,7 @@ def desanitize(value):
         return dict((k.replace('_$_', '$').replace('_,_', '.'), desanitize(v))
                     for k, v in value.iteritems())
     elif t not in BSON_TYPES:
-        raise Exception(value)
+        raise InvalidDocument('unknown BSON type %r' % t)
     else:
         return value
 
