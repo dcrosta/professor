@@ -1,3 +1,4 @@
+import sys
 from setuptools import setup, find_packages
 
 requires = [
@@ -7,8 +8,7 @@ requires = [
     'pytz',
 ]
 
-import sys
-if sys.version_tuple < (2, 7):
+if sys.version_info < (2, 7):
     requires.append('argparse')
 
 setup(
