@@ -41,6 +41,7 @@ BSON_TYPES = set([
     ObjectId,
     type(re.compile('')),
     Code,
+    type(None),
 ])
 
 
@@ -54,6 +55,8 @@ def skeleton(query_part):
     >>> skeleton({})
     u'{}'
     >>> skeleton({u'op': u'query'})
+    u'{op}'
+    >>> skeleton({u'op': None})
     u'{op}'
     """
     t = type(query_part)
