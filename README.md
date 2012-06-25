@@ -43,7 +43,7 @@ by clicking the "update now" link, or using the command-line tool
 The best way to update the profiling data is to ask the `profess` script to
 periodically query for new profiling information from the target databases:
 
-    profess -s 5 localhost/example localhost/test
+    profess -s 5 update localhost/example localhost/test
 
 will update the "example" and "test" databases running on localhost every 5
 seconds.
